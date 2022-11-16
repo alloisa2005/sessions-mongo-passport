@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desafío Passport | Log In</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="w-full h-screen bg-gradient-to-b from-black to-gray-700">
+  
+  <div class="max-w-[1240px] mx-auto px-4">
+
+    <nav class="h-[80px] w-full flex items-center justify-between text-white">      
+      
+      <a href="/"> <h1 class="text-xl font-bold">Desafío Passport - Mongo DB </h1>  </a>             
+
+      <ul class="flex items-center gap-x-5 font-semibold text-lg text-gray-400">        
+        <li class="capitalize hover:text-white hover:scale-105 duration-300 cursor-pointer"><a href="/register">register</a></li>        
+      </ul>
+    </nav>
+
+    <section class="py-4 w-full ">
+      <div class="w-[650px] mx-auto text-center">
+        <h3 class="text-3xl text-white font-semibold italic">Log In</h3>
+
+        <form id="formLogin" class="py-6">          
+
+          <div class="flex justify-center items-center gap-x-4 py-4">
+            <label class="text-white w-[70px]">Email</label>
+            <input id="inputEmail" class="py-1 px-2" type="text" name="email">
+          </div>
+
+          <div class="flex justify-center items-center gap-x-4 py-4">
+            <label class="text-white w-[70px]">Password</label>
+            <input id="inputPass" class="py-1 px-2" type="password" name="password">
+          </div>                    
+
+          <!-- Parrafo para mostrar los errores -->
+          <p id="msjError" class="py-2 text-red-500 italic text-xl font-semibold"></p>
+
+          <button id="btnLogin" class="mt-4 py-2 bg-gray-600 hover:bg-gray-400 hover:shadow-lg hover:shadow-black duration-300 w-[300px] text-white rounded-md text-xl">Log In</button>
+        </form>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="index.js"></script>
+</body>
+</html>
