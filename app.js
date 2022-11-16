@@ -78,11 +78,12 @@ const isLoggedOut = (req, res, next) => {
   res.redirect('/')
 }
 
-app.get('/', isLoggedIn, (req, res) => {   
-  res.render('dashboard');
+app.get('/', isLoggedIn, (req, res) => { 
+  const response = req.user;    
+  res.render('dashboard', response);
 })
 
-app.get('/register', (req, res) => {  
+app.get('/register', isLoggedOut, (req, res) => {  
   const response = {
     error: req.query.error,
     msg: req.query.msg
