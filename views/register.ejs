@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Type" content="text/html">
   <title>Desafío Passport | Register</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -24,26 +25,27 @@
       <div class="w-[650px] mx-auto text-center">
         <h3 class="text-3xl text-white font-semibold italic">Register New User</h3>
 
-        <form id="formRegister" class="py-6">
+        <form class="py-6" action="/register" method="POST">
           <div class="flex justify-center items-center gap-x-4 py-4">
             <label class="text-white w-[70px]">Username</label>
-            <input id="inputName" class="py-1 px-2" type="text" name="username">
+            <input id="inputName" class="py-1 px-2" type="text" name="username" required>
           </div>
 
           <div class="flex justify-center items-center gap-x-4 py-4">
             <label class="text-white w-[70px]">Email</label>
-            <input id="inputEmail" class="py-1 px-2" type="text" name="email">
+            <input id="inputEmail" class="py-1 px-2" type="text" name="email" required>
           </div>
 
           <div class="flex justify-center items-center gap-x-4 py-4">
             <label class="text-white w-[70px]">Password</label>
-            <input id="inputPass" class="py-1 px-2" type="password" name="password">
+            <input id="inputPass" class="py-1 px-2" type="password" name="password" required>
           </div>
           
           <!-- Parrafo para mostrar los errores -->
-          <p id="msjError" class="py-2 text-red-500 italic text-xl font-semibold"></p>
-
-          <button id="btnRegister" class="mt-4 py-2 bg-gray-600 hover:bg-gray-400 hover:shadow-lg hover:shadow-black duration-300 w-[300px] text-white rounded-md text-xl">Create User</button>
+          <% if (error) { %>
+            <p class="py-2 text-red-500 italic text-xl font-semibold"><%= msg %> </p>           
+          <% } %>
+          <input type="submit" value="Create User" class="mt-4 py-2 bg-gray-600 hover:bg-gray-400 hover:shadow-lg hover:shadow-black duration-300 w-[300px] text-white rounded-md text-xl">          
         </form>
       </div>
     </section>

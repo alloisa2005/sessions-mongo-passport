@@ -9,7 +9,8 @@ const cookieParser = require("cookie-parser");
 const passport = require('passport');
 const localStrategy = require('passport-local').Strategy
 
-const UserModel = require('./models/user.model')
+const UserModel = require('./models/user.model');
+const { rawListeners } = require('./models/user.model');
 
 const app = express();
 const PORT = process.env.PORT || 8080
@@ -54,18 +55,17 @@ passport.deserializeUser((id, done) => {
 })
 
 passport.use(new localStrategy(function (username, password, done) {
-  UserModel.findOne({ username }, function (err, user) {
-    if(err)  return done(err); 
-    if(!user)  return done(null, false, {message: 'Username incorrecto'}); 
+	UserModel.findOne({ username: username }, function (err, user) {
+		if (err) return done(err);
+		if (!user) return done(null, false, { message: 'Incorrect username.' });
 
-    bcrypt.compare(password, user.password, function (err, res) {
-      if(err) return done(err); 
-
-      if(res === false) return done(null, false, {message: 'Password incorrecto'});
-
-      return done(null, user)
-    })
-  })
+		bcrypt.compare(password, user.password, function (err, res) {
+			if (err) return done(err);
+			if (res === false) return done(null, false, { message: 'Incorrect password.' });
+			
+			return done(null, user);
+		});
+	});
 }));
 
 const isLoggedIn = (req, res, next) => {
@@ -73,24 +73,61 @@ const isLoggedIn = (req, res, next) => {
   res.redirect('/login')
 }
 
+const isLoggedOut = (req, res, next) => {
+  if(!req.isAuthenticated()) return next()
+  res.redirect('/')
+}
+
 app.get('/', isLoggedIn, (req, res) => {   
   res.render('dashboard');
 })
 
 app.get('/register', (req, res) => {  
-  res.render('register');
+  const response = {
+    error: req.query.error,
+    msg: req.query.msg
+   }
+  res.render('register', response);
 })
 
-app.get('/login', (req, res) => {  
-  res.render('login');
+app.get('/login', isLoggedOut, (req, res) => {  
+
+  const response = {
+   error: req.query.error
+  }
+
+  res.render('login', response);
 })
 
-app.post('/register', (req, res) => { 
+app.post('/register', async (req, res) => { 
+  const {username, email, password} = req.body;
+  try {
+    let user = await UserModel.findOne({ username })
+    if(user) res.redirect('/register?error=true&msg=Username ya registrado')
 
+    const hashPassword = await bcrypt.hash(password, 12);
+
+    user = await UserModel.create({
+      username,
+      email,
+      password: hashPassword
+    })
+    res.redirect('/');
+  } catch (error) {
+    
+  }
 })
 
-app.post('/login', (req, res) => { 
+app.post('/login', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/login?error=true'
+}))
 
-})
+app.get('/logout', function (req, res, next) {
+	req.logout(function(err) {
+    if (err) { return next(err); }
+    res.redirect('/');
+  });
+});
 
 app.listen(PORT, () => console.log(`Server up on port ${PORT}`))
