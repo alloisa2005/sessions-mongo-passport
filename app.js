@@ -1,5 +1,6 @@
 require('dotenv').config()
 
+const bcrypt = require('bcryptjs')
 const express = require('express')
 const session = require("express-session");
 const mongoose = require('mongoose')
@@ -7,6 +8,8 @@ const MongoDBSession = require('connect-mongodb-session')(session)
 const cookieParser = require("cookie-parser");
 const passport = require('passport');
 const localStrategy = require('passport-local').Strategy
+
+const UserModel = require('./models/user.model')
 
 const app = express();
 const PORT = process.env.PORT || 8080
@@ -40,23 +43,54 @@ app.use(session({
 }))
 
 //////// Passport ////////
+app.use(passport.initialize());
+app.use(passport.session());
 
+passport.serializeUser((user, done) => done(null, user.id))
+passport.deserializeUser((id, done) => {
+  UserModel.findById(id, function (err, user) {
+    done(err, user)
+  })
+})
 
+passport.use(new localStrategy(function (username, password, done) {
+  UserModel.findOne({ username }, function (err, user) {
+    if(err)  return done(err); 
+    if(!user)  return done(null, false, {message: 'Username incorrecto'}); 
 
-app.get('/', (req, res) => {   
-  res.render('login');
+    bcrypt.compare(password, user.password, function (err, res) {
+      if(err) return done(err); 
+
+      if(res === false) return done(null, false, {message: 'Password incorrecto'});
+
+      return done(null, user)
+    })
+  })
+}));
+
+const isLoggedIn = (req, res, next) => {
+  if(req.isAuthenticated()) return next()
+  res.redirect('/login')
+}
+
+app.get('/', isLoggedIn, (req, res) => {   
+  res.render('dashboard');
 })
 
 app.get('/register', (req, res) => {  
   res.render('register');
 })
 
-app.post('register', (req, res) => { 
+app.get('/login', (req, res) => {  
+  res.render('login');
+})
+
+app.post('/register', (req, res) => { 
 
 })
 
-app.get('/dashboard', (req, res) => {  
-  res.render('dashboard');
+app.post('/login', (req, res) => { 
+
 })
 
 app.listen(PORT, () => console.log(`Server up on port ${PORT}`))
