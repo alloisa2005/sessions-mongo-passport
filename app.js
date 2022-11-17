@@ -9,7 +9,9 @@ const cookieParser = require("cookie-parser");
 const passport = require('passport');
 
 // Local Strategy
-require('./strategies/local')
+require('./strategies/local') 
+// Google Strategy
+//require('./strategies/google')
 
 const UserModel = require('./models/user.model');
 
@@ -60,8 +62,9 @@ const isLoggedOut = (req, res, next) => {
 }
 
 app.get('/', isLoggedIn, (req, res) => { 
+  console.log(req.user);
   const response = req.user;    
-  res.render('dashboard', response);
+  res.render('dashboard', response); 
 })
 
 app.get('/register', isLoggedOut, (req, res) => {  
@@ -111,5 +114,14 @@ app.get('/logout', function (req, res, next) {
     res.redirect('/');
   });
 });
+
+/* app.get('/auth/google',passport.authenticate('google', { scope: ['profile', 'email'] })); */
+
+/* app.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/login?error=true', successRedirect: '/' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  }); */
 
 app.listen(PORT, () => console.log(`Server up on port ${PORT}`))
