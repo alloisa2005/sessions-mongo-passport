@@ -61,8 +61,7 @@ const isLoggedOut = (req, res, next) => {
   res.redirect('/')
 }
 
-app.get('/', isLoggedIn, (req, res) => { 
-  console.log(req.user);
+app.get('/', isLoggedIn, (req, res) => {   
   const response = req.user;    
   res.render('dashboard', response); 
 })
