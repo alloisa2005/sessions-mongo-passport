@@ -38,7 +38,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 app.use(cookieParser());
 app.use(session({
-    key: 'user_sid',
+    key: process.env.SESSION_KEY,
     secret: process.env.COOKIE_SECRET,
     resave: false,
     saveUninitialized: false,  
@@ -127,11 +127,11 @@ app.get('/logout', function (req, res, next) {
 /// Desafio Objeto Process
 app.get('/info', (req, res) => {
   res.send({
-    argumentos: 'argumentos',    
+    argumentos: process.argv.slice(2),    
     plataforma: process.platform,
     node_version: process.version,
     memoria_rss: process.memoryUsage().rss,
-    path: 'path',
+    path: process.execPath,
     pid: process.pid, 
     carpeta: process.cwd()
   })
