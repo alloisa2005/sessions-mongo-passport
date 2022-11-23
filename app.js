@@ -123,4 +123,25 @@ app.get('/logout', function (req, res, next) {
     res.redirect('/');
   }); */
 
+
+/// Desafio Objeto Process
+app.get('/info', (req, res) => {
+  res.send({
+    argumentos: 'argumentos',    
+    plataforma: process.platform,
+    node_version: process.version,
+    memoria_rss: process.memoryUsage().rss,
+    path: 'path',
+    pid: process.pid, 
+    carpeta: process.cwd()
+  })
+})
+
+
+/// Desafio Procesos Hijos
+app.get('/api/randoms', (req, res) => {
+  res.send({res: 'Random'})
+})
+
+
 app.listen(PORT, () => console.log(`Server up on port ${PORT}`))
