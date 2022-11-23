@@ -8,6 +8,8 @@ const MongoDBSession = require('connect-mongodb-session')(session)
 const cookieParser = require("cookie-parser");
 const passport = require('passport');
 
+const yargs = require('yargs');
+
 // Local Strategy
 require('./strategies/local') 
 // Google Strategy
@@ -126,15 +128,18 @@ app.get('/logout', function (req, res, next) {
 
 /// Desafio Objeto Process
 app.get('/info', (req, res) => {
+
+  console.log(yargs.argv.port);
+
   res.send({
-    argumentos: process.argv.slice(2),    
+    argumentos: yargs.argv,    
     plataforma: process.platform,
     node_version: process.version,
     memoria_rss: process.memoryUsage().rss,
     path: process.execPath,
     pid: process.pid, 
     carpeta: process.cwd()
-  })
+  })  
 })
 
 
