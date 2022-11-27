@@ -8,17 +8,38 @@ const MongoDBSession = require('connect-mongodb-session')(session)
 const cookieParser = require("cookie-parser");
 const passport = require('passport');
 
+///////////// YARGS //////////////
+let PORT = process.env.PORT || 8080;
 const yargs = require('yargs');
+yargs.version('1.0.0');
+yargs.command({
+  command: 'port',
+  describe: 'Puerto de escucha de la aplicación',
+  builder: {
+    p: {
+      describe: 'Nro del puerto',      
+      default: 8080,    
+    }
+  },
+  handler: function (argv){ 
+    PORT = process.env.PORT || argv.p;
+  }
+})
+
+yargs.parse();
+//////////////////////////////////
 
 // Local Strategy
 require('./strategies/local') 
-// Google Strategy
-//require('./strategies/google')
 
 const UserModel = require('./models/user.model');
 
 const app = express();
-const PORT = process.env.PORT || 8080
+/* let PORT = process.env.PORT || 8080; */
+/* if(yargs.argv.port){  
+  PORT = yargs.argv.port
+} */
+
 
 ///////////////// Conexión MONGO DB /////////////////////////////////
 mongoose.connect(process.env.mongo_URI, {
@@ -129,8 +150,6 @@ app.get('/logout', function (req, res, next) {
 /// Desafio Objeto Process
 app.get('/info', (req, res) => {
 
-  console.log(yargs.argv.port);
-
   res.send({
     argumentos: yargs.argv,    
     plataforma: process.platform,
@@ -145,7 +164,11 @@ app.get('/info', (req, res) => {
 
 /// Desafio Procesos Hijos
 app.get('/api/randoms', (req, res) => {
-  res.send({res: 'Random'})
+  
+  let { cant } = req.query;
+  if(!cant) cant = 0;
+  
+  res.send({res: 'Random', cant})
 })
 
 
