@@ -4,7 +4,7 @@ const router = Router();
 router.get('/', (req, res) => {
   
   let { cant } = req.query;
-  if(!cant) cant = 1e10;  // puse este nro porq demora mucho en mi pc un nro mas grande (no es muy buena ja)
+  if(!cant) cant = 1e10;  // puse este nro porq demora mucho en mi pc un nro mas grande
 
   let result = 0;
 
