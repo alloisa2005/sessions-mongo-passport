@@ -8,6 +8,11 @@ const MongoDBSession = require('connect-mongodb-session')(session)
 const cookieParser = require("cookie-parser");
 const passport = require('passport');
 
+///////////// Rutas Info y Random //////////////
+const routerInfo = require('./routes/info.routes')
+const routerRandom = require('./routes/random.routes')
+////////////////////////////////////////////////
+
 ///////////// YARGS //////////////
 let PORT = process.env.PORT || 8080;
 const yargs = require('yargs');
@@ -143,28 +148,10 @@ app.get('/logout', function (req, res, next) {
 
 
 /// Desafio Objeto Process
-app.get('/info', (req, res) => {
-
-  res.send({
-    argumentos: yargs.argv,    
-    plataforma: process.platform,
-    node_version: process.version,
-    memoria_rss: process.memoryUsage().rss,
-    path: process.execPath,
-    pid: process.pid, 
-    carpeta: process.cwd()
-  })  
-})
-
+app.use('/info', routerInfo)
 
 /// Desafio Procesos Hijos
-app.get('/api/randoms', (req, res) => {
-  
-  let { cant } = req.query;
-  if(!cant) cant = 0;
-  
-  res.send({res: 'Random', cant})
-})
+app.use('/api/randoms', routerRandom)
 
 
 app.listen(PORT, () => console.log(`Server up on port ${PORT}`))
