@@ -35,11 +35,6 @@ require('./strategies/local')
 const UserModel = require('./models/user.model');
 
 const app = express();
-/* let PORT = process.env.PORT || 8080; */
-/* if(yargs.argv.port){  
-  PORT = yargs.argv.port
-} */
-
 
 ///////////////// Conexión MONGO DB /////////////////////////////////
 mongoose.connect(process.env.mongo_URI, {
