@@ -1,6 +1,19 @@
 
-let result = 0;
+let cant = 0;
+process.on('message', message =>{
 
-for (let i = 0; i < 1e10; i++) result += i;
+  cant = parseInt(message);
+  const result = calculo(cant);
 
-process.send(result);
+  process.send(result);
+  
+});
+
+const calculo = (nro) =>{
+  let result = 0;
+  
+  for (let i = 0; i < cant; i++) result += i;
+  return result;
+}
+
+
