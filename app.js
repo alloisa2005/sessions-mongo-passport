@@ -15,36 +15,12 @@ const routerRandom = require('./routes/random.routes')
 ////////////////////////////////////////////////
 
 ///////////// YARGS //////////////
-let PORT = process.env.PORT || 8080;
-let modo = 'fork'
 const yargs = require('yargs');
 yargs.version('1.0.0');
-yargs.command({
-  command: 'port',
-  describe: 'Puerto de escucha de la aplicación',
-  builder: {
-    p: {
-      describe: 'Nro del puerto',      
-      default: 8080,    
-    }
-  },
-  handler: function (argv){ 
-    PORT = process.env.PORT || argv.p;
-  }
-})
-yargs.command({
-  command: 'modo',
-  describe: 'Indica Modo CLUSTER o FORK',
-  builder: {
-    m: {
-      describe: 'Modo de ejecución',      
-      default: 'fork',    
-    }
-  },
-  handler: function (argv){ 
-    modo = argv.m;
-  }
-})
+
+let PORT = yargs.argv.port || process.env.PORT || 8080;
+let modo = yargs.argv.modo || 'fork';
+
 yargs.parse();
 //////////////////////////////////
 
@@ -161,7 +137,7 @@ app.get('/logout', function (req, res, next) {
   }); */
 
 
-if(cluster.isPrimary) {
+if(cluster.isPrimary) {  
 
   if(modo !== 'fork'){
     for (let i = 0; i < core.cpus().length; i++) {
