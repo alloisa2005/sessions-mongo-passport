@@ -16,6 +16,7 @@ const routerRandom = require('./routes/random.routes')
 
 ///////////// YARGS //////////////
 let PORT = process.env.PORT || 8080;
+let modo = 'fork'
 const yargs = require('yargs');
 yargs.version('1.0.0');
 yargs.command({
@@ -31,7 +32,19 @@ yargs.command({
     PORT = process.env.PORT || argv.p;
   }
 })
-
+yargs.command({
+  command: 'modo',
+  describe: 'Indica Modo CLUSTER o FORK',
+  builder: {
+    m: {
+      describe: 'Modo de ejecución',      
+      default: 'fork',    
+    }
+  },
+  handler: function (argv){ 
+    modo = argv.m;
+  }
+})
 yargs.parse();
 //////////////////////////////////
 
@@ -150,11 +163,18 @@ app.get('/logout', function (req, res, next) {
 
 if(cluster.isPrimary) {
   console.log(`Proceso padre: ${process.pid}`);  
-  for (let i = 0; i < core.cpus().length; i++) {
-    cluster.fork()    
-  }
+  console.log(`modo: ${modo}`);
 
-  cluster.on('exit',() => cluster.fork())
+  if(modo !== 'fork'){
+    for (let i = 0; i < core.cpus().length; i++) {
+      cluster.fork()    
+    }
+  
+    // reemplazar workers en caso de que mueran
+    cluster.on('exit',() => cluster.fork())
+  }else {
+    cluster.fork()
+  }  
   
 }else {  
   app.listen(PORT, () => console.log(`Server up on port ${PORT}, process id=${process.pid}`))
