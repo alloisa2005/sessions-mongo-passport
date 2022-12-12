@@ -162,8 +162,6 @@ app.get('/logout', function (req, res, next) {
 
 
 if(cluster.isPrimary) {
-  console.log(`Proceso padre: ${process.pid}`);  
-  console.log(`modo: ${modo}`);
 
   if(modo !== 'fork'){
     for (let i = 0; i < core.cpus().length; i++) {
