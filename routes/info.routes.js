@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
     path: process.execPath,
     pid: process.pid, 
     carpeta: process.cwd(),
-    procesadores: core.cpus().length,
+    nro_procesadores: core.cpus().length,
   })  
 })
 

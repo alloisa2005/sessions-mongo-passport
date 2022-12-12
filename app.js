@@ -8,7 +8,7 @@ const MongoDBSession = require('connect-mongodb-session')(session)
 const cookieParser = require("cookie-parser");
 const passport = require('passport');
 const cluster = require('cluster');
-
+const core = require('os')
 ///////////// Rutas Info y Random //////////////
 const routerInfo = require('./routes/info.routes')
 const routerRandom = require('./routes/random.routes')
@@ -148,15 +148,20 @@ app.get('/logout', function (req, res, next) {
   }); */
 
 
-/// Desafio Objeto Process
-app.use('/info', routerInfo)
-
-/// Desafio Procesos Hijos
-app.use('/api/randoms', routerRandom)
-
 if(cluster.isPrimary) {
   console.log(`Proceso padre: ${process.pid}`);  
-  cluster.fork()
+  for (let i = 0; i < core.cpus().length; i++) {
+    cluster.fork()    
+  }
+
+  cluster.on('exit',() => cluster.fork())
+  
 }else {  
   app.listen(PORT, () => console.log(`Server up on port ${PORT}, process id=${process.pid}`))
+
+  /// Desafio Objeto Process
+  app.use('/info', routerInfo)
+
+  /// Desafio Procesos Hijos
+  app.use('/api/randoms', routerRandom)
 }
