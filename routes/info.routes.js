@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const router = Router();
 const yargs = require('yargs');
+const core = require('os');
 
 router.get('/', (req, res) => {
 
@@ -11,7 +12,8 @@ router.get('/', (req, res) => {
     memoria_rss: process.memoryUsage().rss,
     path: process.execPath,
     pid: process.pid, 
-    carpeta: process.cwd()
+    carpeta: process.cwd(),
+    procesadores: core.cpus().length,
   })  
 })
 

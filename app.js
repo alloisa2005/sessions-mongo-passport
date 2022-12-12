@@ -7,6 +7,7 @@ const mongoose = require('mongoose')
 const MongoDBSession = require('connect-mongodb-session')(session)
 const cookieParser = require("cookie-parser");
 const passport = require('passport');
+const cluster = require('cluster');
 
 ///////////// Rutas Info y Random //////////////
 const routerInfo = require('./routes/info.routes')
@@ -42,18 +43,18 @@ const UserModel = require('./models/user.model');
 const app = express();
 
 ///////////////// Conexión MONGO DB /////////////////////////////////
-mongoose.connect(process.env.mongo_URI, {
-  useNewUrlParser: true,   
-  useUnifiedTopology: true
-}).then( res => console.log('Base de datos conectada!!'))
-  .catch( err => console.log('Error al conectar la base de datos!!'))
+
 /////////////////////////////////////////////////////////////////////
 const store = new MongoDBSession({
   uri: process.env.mongo_URI,
   collection: 'mySessions'
 })
 /////////////////////////////////////////////////////////////////////
-
+mongoose.connect(process.env.mongo_URI, {
+  useNewUrlParser: true,   
+  useUnifiedTopology: true
+}).then( res => console.log('Base de datos conectada!!'))
+  .catch( err => console.log('Error al conectar la base de datos!!'))
 //////// Middlewares ////////
 app.set('views', './views');
 app.set('view engine', 'ejs');
@@ -153,5 +154,9 @@ app.use('/info', routerInfo)
 /// Desafio Procesos Hijos
 app.use('/api/randoms', routerRandom)
 
-
-app.listen(PORT, () => console.log(`Server up on port ${PORT}`))
+if(cluster.isPrimary) {
+  console.log(`Proceso padre: ${process.pid}`);  
+  cluster.fork()
+}else {  
+  app.listen(PORT, () => console.log(`Server up on port ${PORT}, process id=${process.pid}`))
+}
