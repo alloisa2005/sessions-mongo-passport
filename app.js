@@ -12,11 +12,12 @@ const core = require('os');
 const compression = require('compression');
 
 ///////  LOGGER///////////////
-const { logger_info } = require('./logger/log_config');
+const { logger_info, logger_warn } = require('./logger/log_config');
 
-///////////// Rutas Info y Random //////////////
+///////////// Rutas Info, Random y Products//////////////
 const routerInfo = require('./routes/info.routes')
 const routerRandom = require('./routes/random.routes')
+const productsRouter = require('./routes/product.routes');
 ////////////////////////////////////////////////
 
 ///////////// YARGS //////////////
@@ -174,4 +175,13 @@ if(cluster.isPrimary) {
 
   /// Desafio Procesos Hijos
   app.use('/api/randoms', routerRandom)
+
+  /// Ruta de Productos (ej para el logger)
+  app.use('/api/products', productsRouter)
+
+  // Cuando no existe la ruta
+  app.use((req, res)=> {
+    logger_warn.error(`Ruta ${req.method} - ${req.baseUrl}${req.url} no encontrada`);
+    res.status(404).send({status: 'ERROR', result: `Ruta ${req.method} - ${req.baseUrl}${req.url} no encontrada`})
+  });
 }
