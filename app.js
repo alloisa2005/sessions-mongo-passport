@@ -8,7 +8,9 @@ const MongoDBSession = require('connect-mongodb-session')(session)
 const cookieParser = require("cookie-parser");
 const passport = require('passport');
 const cluster = require('cluster');
-const core = require('os')
+const core = require('os');
+const compression = require('compression');
+
 ///////////// Rutas Info y Random //////////////
 const routerInfo = require('./routes/info.routes')
 const routerRandom = require('./routes/random.routes')
@@ -58,6 +60,10 @@ app.use(session({
     store: store,  
     cookie: { maxAge: 1000*60*60 }  // 1 hora
 }))
+
+//////// Compression ////////
+app.use(compression());
+/////////////////////////////
 
 //////// Passport ////////
 app.use(passport.initialize());
