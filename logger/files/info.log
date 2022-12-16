@@ -1,0 +1,4 @@
+[2022-12-16T11:46:51.705] [INFO] INFO - Ruta GET - "localhost:8080/api/randoms" accedida
+[2022-12-16T11:46:52.768] [INFO] INFO - Ruta GET - "localhost:8080/info" accedida
+[2022-12-16T11:46:54.341] [INFO] INFO - Ruta GET - "localhost:8080" accedida
+[2022-12-16T11:47:16.575] [INFO] INFO - Ruta GET - "localhost:8080" accedida

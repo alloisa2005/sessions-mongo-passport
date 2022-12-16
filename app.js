@@ -11,6 +11,8 @@ const cluster = require('cluster');
 const core = require('os');
 const compression = require('compression');
 
+///////  LOGGER///////////////
+const { logger_info } = require('./logger/log_config');
 
 ///////////// Rutas Info y Random //////////////
 const routerInfo = require('./routes/info.routes')
@@ -77,11 +79,17 @@ const isLoggedOut = (req, res, next) => {
 }
 
 app.get('/', isLoggedIn, (req, res) => {   
+
+  logger_info.info(`Ruta ${req.method} - "${req.hostname}:${req.socket.localPort}${req.baseUrl}" accedida`);  
+
   const response = req.user;    
   res.render('dashboard', response); 
 })
 
-app.get('/register', isLoggedOut, (req, res) => {  
+app.get('/register', isLoggedOut, (req, res) => {
+  
+  logger_info.info(`Ruta ${req.method} - "${req.hostname}:${req.socket.localPort}${req.baseUrl}" accedida`);  
+
   const response = {
     error: req.query.error,
     msg: req.query.msg
@@ -91,6 +99,8 @@ app.get('/register', isLoggedOut, (req, res) => {
 
 app.get('/login', isLoggedOut, (req, res) => {  
 
+  logger_info.info(`Ruta ${req.method} - "${req.hostname}:${req.socket.localPort}${req.baseUrl}" accedida`);  
+
   const response = {
    error: req.query.error
   }
@@ -99,6 +109,9 @@ app.get('/login', isLoggedOut, (req, res) => {
 })
 
 app.post('/register', async (req, res) => { 
+
+  logger_info.info(`Ruta ${req.method} - "${req.hostname}:${req.socket.localPort}${req.baseUrl}" accedida`);
+
   const {username, email, password} = req.body;
   try {
     let user = await UserModel.findOne({ username })
@@ -118,11 +131,15 @@ app.post('/register', async (req, res) => {
 })
 
 app.post('/login', passport.authenticate('local', {
+  
   successRedirect: '/',
   failureRedirect: '/login?error=true'
 }))
 
 app.get('/logout', function (req, res, next) {
+
+  logger_info.info(`Ruta ${req.method} - "${req.hostname}:${req.socket.localPort}${req.baseUrl}" accedida`);
+  
 	req.logout(function(err) {
     if (err) { return next(err); }
     res.redirect('/');
