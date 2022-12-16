@@ -11,6 +11,7 @@ const cluster = require('cluster');
 const core = require('os');
 const compression = require('compression');
 
+
 ///////////// Rutas Info y Random //////////////
 const routerInfo = require('./routes/info.routes')
 const routerRandom = require('./routes/random.routes')
@@ -33,19 +34,14 @@ const UserModel = require('./models/user.model');
 
 const app = express();
 
-///////////////// Conexión MONGO DB /////////////////////////////////
-
-/////////////////////////////////////////////////////////////////////
+///////////////// Sesión MONGO DB //////////////////////////////
 const store = new MongoDBSession({
   uri: process.env.mongo_URI,
   collection: 'mySessions'
 })
-/////////////////////////////////////////////////////////////////////
-mongoose.connect(process.env.mongo_URI, {
-  useNewUrlParser: true,   
-  useUnifiedTopology: true
-}).then( res => console.log('Base de datos conectada!!'))
-  .catch( err => console.log('Error al conectar la base de datos!!'))
+//////////////////////////////////////////////////////////////////
+
+
 //////// Middlewares ////////
 app.set('views', './views');
 app.set('view engine', 'ejs');
@@ -133,15 +129,6 @@ app.get('/logout', function (req, res, next) {
   });
 });
 
-/* app.get('/auth/google',passport.authenticate('google', { scope: ['profile', 'email'] })); */
-
-/* app.get('/auth/google/callback', 
-  passport.authenticate('google', { failureRedirect: '/login?error=true', successRedirect: '/' }),
-  function(req, res) {
-    // Successful authentication, redirect home.
-    res.redirect('/');
-  }); */
-
 
 if(cluster.isPrimary) {  
 
@@ -157,6 +144,12 @@ if(cluster.isPrimary) {
   }  
   
 }else {  
+  mongoose.connect(process.env.mongo_URI, {
+    useNewUrlParser: true,   
+    useUnifiedTopology: true
+  }).then( res => console.log('Base de datos conectada!!'))
+    .catch( err => console.log('Error al conectar la base de datos!!'))
+
   app.listen(PORT, () => console.log(`Server up on port ${PORT}, process id=${process.pid}`))
 
   /// Desafio Objeto Process
