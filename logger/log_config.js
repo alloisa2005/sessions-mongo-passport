@@ -12,13 +12,23 @@ log4js.configure({
       appenders: ["consola"],
       level: "all"
     },
-    DEV: {
+    INFO: {
       appenders: ["file_info"],
       level: "all"
+    },
+    WARNING: {
+      appenders: ["file_warning"],
+      level: "WARN"
+    },
+    ERROR: {
+      appenders: ["file_error"],
+      level: "ERROR"
     }
   }
 });
 
-const logger_dev = log4js.getLogger('DEV');
+const logger_dev = log4js.getLogger('INFO');
+const logger_warn = log4js.getLogger('WARNING');
+const logger_error = log4js.getLogger('ERROR');
 
-module.exports = { logger_dev };
+module.exports = { logger_dev, logger_warn, logger_error };

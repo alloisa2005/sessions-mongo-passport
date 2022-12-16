@@ -2,11 +2,11 @@ const { Router } = require('express');
 const router = Router();
 const yargs = require('yargs');
 const core = require('os');
-const { logger_dev } = require('../logger/log_config');
+const { logger_dev, logger_error } = require('../logger/log_config');
 
 router.get('/', (req, res) => {
 
-  logger_dev.info(`Ruta "${req.hostname}:${req.socket.localPort}${req.baseUrl}" accedida`);  
+  logger_dev.info(`Ruta "${req.hostname}:${req.socket.localPort}${req.baseUrl}" accedida`);    
 
   res.send({
     argumentos: yargs.argv,    
