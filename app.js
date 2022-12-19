@@ -181,7 +181,7 @@ if(cluster.isPrimary) {
 
   // Cuando no existe la ruta
   app.use((req, res)=> {
-    logger_warn.error(`Ruta ${req.method} - ${req.baseUrl}${req.url} no encontrada`);
+    logger_warn.error(`Ruta ${req.method} - "${req.baseUrl}${req.url}" no encontrada`);
     res.status(404).send({status: 'ERROR', result: `Ruta ${req.method} - ${req.baseUrl}${req.url} no encontrada`})
   });
 }

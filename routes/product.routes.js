@@ -2,7 +2,7 @@ const express = require('express');
 const crypto = require('crypto');
 const router = express.Router();
 let products = require('../data/products_data'); 
-const { logger_info, logger_error, logger_warn } = require('../logger/log_config');
+const { logger_info, logger_error } = require('../logger/log_config');
 
 // Middleware para validar lo que viene en el body como dato de entrada
 const validarInputsProduct = (req,res,next) => {
