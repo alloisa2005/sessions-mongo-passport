@@ -5,25 +5,8 @@ let products = require('../data/products_data');
 const { logger_info, logger_error } = require('../logger/log_config');
 
 // Middleware para validar lo que viene en el body como dato de entrada
-const validarInputsProduct = (req,res,next) => {
-  let producto = req.body;
+const { validarInputsProduct } = require('../services/validaciones');
 
-  if(producto.title === '' || producto.price <= 0 || producto.price === '') return res.status(404).send({
-    status: 'ERROR',
-    result: 'Ingrese los datos del producto correctamente'
-  });
-
-  next();
-}
-
-// Middleware para validar si existe el ID del producto
-const validarProductId = (req,res,next) => {
-  let { id } = req.params;  
-
-  let existe = products.some(p => p.id === id);
-
-  existe ? next() : res.status(200).send({ status:'ERROR', result: `No existe producto con ID ${id}`});
-}
 
 router.get('/', (req, res) => {
   logger_info.info(`Ruta ${req.method} - "${req.hostname}:${req.socket.localPort}${req.baseUrl}" accedida`);  
@@ -31,7 +14,7 @@ router.get('/', (req, res) => {
   res.status(200).send({status: 'OK', result:products});
 });
 
-router.get('/:id', validarProductId, (req, res) => {
+router.get('/:id', (req, res) => {
 
   logger_info.info(`Ruta ${req.method} - "${req.hostname}:${req.socket.localPort}${req.baseUrl}" accedida`);  
   try {
@@ -63,7 +46,7 @@ router.post('/', validarInputsProduct, (req, res) => {
 });
 
 
-router.put('/:id', validarProductId, validarInputsProduct, (req, res) => {
+router.put('/:id', validarInputsProduct, (req, res) => {
 
   logger_info.info(`Ruta ${req.method} - "${req.hostname}:${req.socket.localPort}${req.baseUrl}" accedida`);
 
@@ -88,7 +71,7 @@ router.put('/:id', validarProductId, validarInputsProduct, (req, res) => {
 });
 
 
-router.delete('/:id', validarProductId, (req, res) => {
+router.delete('/:id', (req, res) => {
 
   logger_info.info(`Ruta ${req.method} - "${req.hostname}:${req.socket.localPort}${req.baseUrl}" accedida`);
 
